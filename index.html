@@ -1,0 +1,721 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For Oussama & Ranin 💖</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Amiri:wght@400;700&family=Dancing+Script:wght@400;700&family=Reem+Kufi+Fun&display=swap" rel="stylesheet">
+    <style>
+        /* ===== عام ===== */
+        :root {
+            --red-color: #ff0000;
+            --soft-red: #ffcccb;
+        }
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: "Amiri", serif;
+            direction: rtl;
+            position: relative;
+            transition: background 1s ease-in-out;
+        }
+        body.writing-bg {
+            background: linear-gradient(135deg, black 0%, var(--red-color) 100%);
+        }
+
+        /* ===== العد التنازلي والرسالة الأولية ===== */
+        #countdown, #initial-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            color: var(--red-color);
+            text-shadow: 0 0 10px var(--red-color), 0 0 20px var(--red-color), 0 0 40px var(--red-color), 0 0 80px var(--red-color);
+            animation: glow 1.5s ease-in-out infinite;
+            z-index: 10;
+            font-family: "Courier New", monospace;
+            display: none;
+        }
+        #countdown { display: block; }
+        #initial-message {
+            font-size: 60px;
+            font-family: "Amiri", serif;
+            opacity: 0;
+            animation: fadeInText 2s ease forwards;
+        }
+        @keyframes glow {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px var(--red-color), 0 0 20px var(--red-color); }
+            50% { opacity: 0.6; text-shadow: 0 0 20px var(--red-color), 0 0 40px var(--red-color); }
+        }
+        @keyframes fadeInText {
+            from { opacity: 0; letter-spacing: 20px; }
+            to { opacity: 1; letter-spacing: normal; }
+        }
+
+        /* ===== الخلفية الضبابية (أثناء العد) ===== */
+        #centered-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            max-width: 900px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            filter: blur(8px);
+            transition: opacity 2s ease;
+            z-index: -1;
+        }
+        #centered-image.visible { opacity: 1; }
+        
+        /* ===== قلوب طائرة ===== */
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: floatUp 4s linear forwards;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 1;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+
+        /* ===== البطاقة ===== */
+        .love-letter-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 220px;
+            max-width: 80%;
+            max-height: 60%;
+            display: none;
+            z-index: 10;
+            transition: opacity 0.5s ease-out;
+        }
+        .envelope-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            perspective: 1500px;
+        }
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--red-color), var(--soft-red));
+            border-radius: 12px;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        .envelope:hover { transform: scale(1.03); }
+        .envelope-top, .envelope-front {
+            position: absolute; left: 0; top: 0; width: 100%; height: 100%; backface-visibility: hidden;
+        }
+        .envelope-top {
+            background: linear-gradient(180deg, var(--soft-red) 0%, var(--red-color) 100%);
+            border-radius: 12px 12px 0 0;
+            transform-origin: top;
+            transform: rotateX(0deg);
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 3;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15) inset;
+        }
+        .envelope-front {
+            background: linear-gradient(180deg, var(--soft-red), var(--red-color));
+            border-radius: 0 0 12px 12px;
+            z-index: 1;
+        }
+        .card {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s;
+            transform: translateY(0);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .love-letter-container.opened .envelope-top { transform: rotateX(-180deg); }
+        .love-letter-container.opened .card {
+            transform: translateY(-80px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            transition-delay: 0.15s;
+        }
+
+        /* ===== صفحة الرسالة والكتابة ===== */
+        .writing-page {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            height: auto;
+            min-height: 200px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 1s ease-out;
+            overflow-y: auto;
+        }
+        .writing-page.visible { opacity: 1; }
+        .writing-page p {
+            font-family: 'Reem Kufi Fun', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            text-align: right;
+            border-right: 2px solid var(--red-color);
+            padding-right: 15px;
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .writing-text { display: inline; }
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 25px;
+            background-color: var(--red-color);
+            vertical-align: middle;
+            margin-right: 5px;
+            animation: blink 0.8s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ===== زر معرض الصور ===== */
+        #photo-gallery-btn {
+            display: none;
+            background-color: transparent;
+            color: var(--red-color);
+            border: 2px solid var(--red-color);
+            padding: 15px 30px;
+            font-size: 24px;
+            font-family: 'Amiri', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--red-color), 0 0 20px var(--red-color), 0 0 40px var(--red-color);
+            animation: pulse 1.5s infinite;
+            margin-top: 40px;
+            z-index: 30;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px var(--red-color), 0 0 20px var(--red-color), 0 0 40px var(--red-color); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px var(--red-color), 0 0 40px var(--red-color), 0 0 80px var(--red-color); }
+        }
+        
+        /* ===== صفحة معرض الصور ===== */
+        .photo-gallery-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-color: black;
+            position: relative;
+        }
+        .photo-gallery-page.visible { opacity: 1; }
+        .gallery-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        .gallery-background.active { opacity: 1; }
+        .gallery-content {
+            z-index: 60;
+            text-align: center;
+            position: relative;
+        }
+        .gallery-photo {
+            max-width: 90%;
+            max-height: 70vh;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), 0 0 50px rgba(255, 0, 0, 0.4);
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .gallery-photo.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* ===== زر التنقل بين الصور ===== */
+        #next-photo-btn {
+            background-color: transparent;
+            color: var(--red-color);
+            border: 2px solid var(--red-color);
+            padding: 15px 30px;
+            font-size: 24px;
+            font-family: 'Amiri', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--red-color), 0 0 20px var(--red-color);
+            animation: pulse 1.5s infinite;
+            margin-top: 20px;
+            z-index: 60;
+        }
+
+        /* ===== شاشة رسالة الشكر ===== */
+        #thank-you-message-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 70;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        #thank-you-message-page.visible { opacity: 1; }
+        #thank-you-text {
+            color: white;
+            font-family: 'Amiri', serif;
+            font-size: 32px;
+            text-align: center;
+            padding: 20px;
+            line-height: 1.6;
+            max-width: 80%;
+        }
+
+        /* ===== شاشة نهاية الفيلم (الرسائل الصاعدة) ===== */
+        #credits-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 80;
+            text-align: center;
+            color: white;
+            font-family: 'Amiri', serif;
+            line-height: 1.8;
+            padding: 20px;
+        }
+        .credits-line {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+            font-size: 24px;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+        .credits-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .credits-line.larger {
+            font-size: 32px; /* خط أكبر للعناوين */
+            font-weight: bold;
+        }
+        
+        /* ===== توقيع المطور ===== */
+        .developer-signature {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 22px; /* تم تكبير الخط هنا */
+            z-index: 90; /* لضمان ظهوره فوق كل شيء */
+            direction: ltr;
+        }
+        
+        /* ===== استجابة الشاشة الصغيرة ===== */
+        @media (max-width: 600px) {
+            #countdown { font-size: 80px; }
+            #initial-message { font-size: 40px; }
+            .love-letter-container { width: 90%; height: 50%; }
+            .writing-page { width: 95%; height: 90%; padding: 20px; }
+            .writing-page p { font-size: 16px; }
+            #centered-image { max-width: 90%; }
+            #photo-gallery-btn, #next-photo-btn { font-size: 18px; padding: 10px 20px; }
+            #thank-you-text { font-size: 24px; }
+            .credits-line { font-size: 18px; }
+            .credits-line.larger { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown">3</div>
+    <div id="initial-message">for oussama + ranin</div>
+    <img id="centered-image" class="centered-image" src="https://g.top4top.io/p_3554q9xnr1.png" alt="صورة خلفية">
+
+    <div class="love-letter-container" id="love-letter">
+        <div class="envelope-wrapper">
+            <div class="envelope" role="button" aria-label="اضغط لفتح الرسالة">
+                <div class="envelope-top"></div>
+                <div class="envelope-front"></div>
+                <div class="card"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="writing-page" id="writing-page">
+        <p>
+            <span id="writing-area"></span><span class="cursor"></span>
+        </p>
+        <button id="photo-gallery-btn">ذكرياتنا الجميلة ✨</button>
+    </div>
+
+    <div id="photo-gallery-page" class="photo-gallery-page">
+        <div id="gallery-bg-1" class="gallery-background active"></div>
+        <div id="gallery-bg-2" class="gallery-background"></div>
+        <div class="gallery-content">
+            <img class="gallery-photo" src="https://l.top4top.io/p_3554gq1b61.jpg" alt="صورة من ذكرياتنا">
+            <img class="gallery-photo" src="https://a.top4top.io/p_35549n9v31.jpg" alt="صورة من ذكرياتنا">
+            <img class="gallery-photo" src="https://b.top4top.io/p_35546l2uq1.jpg" alt="صورة من ذكرياتنا">
+            <img class="gallery-photo" src="https://c.top4top.io/p_35548x5ic1.jpg" alt="صورة من ذكرياتنا">
+            <img class="gallery-photo" src="https://d.top4top.io/p_3554p1rct1.jpg" alt="صورة من ذكرياتنا">
+            <img class="gallery-photo" src="https://f.top4top.io/p_355419c261.jpg" alt="صورة من ذكرياتنا">
+        </div>
+        <button id="next-photo-btn">اللقطة القادمة 💖</button>
+    </div>
+
+    <div id="thank-you-message-page">
+        <p id="thank-you-text">
+            أسأل الله أن يديم بينكما المودة والسعادة. شكرًا لكما على كل لحظة جميلة.
+            <br>
+            أتمنى أن تكون هذه اللحظات قد أسعدتكما.
+        </p>
+    </div>
+
+    <div id="credits-page">
+    </div>
+
+    <div class="developer-signature">Coded by Abdou</div>
+
+    <audio id="loveAudio" src="https://f.top4top.io/m_3553m5i0t1.mp3" preload="auto" loop></audio>
+    <audio id="writingAudio" src="https://assets.mixkit.co/sfx/preview/mixkit-typewriter-key-press-1282.mp3" preload="auto"></audio>
+    <audio id="openEnvelopeAudio" src="https://assets.mixkit.co/sfx/preview/mixkit-paper-flip-1549.mp3" preload="auto"></audio>
+    <audio id="galleryAudio" src="https://a.top4top.io/m_35552yq011.mp3" preload="auto" loop></audio>
+
+    <script>
+        const longLoveMessage = `
+            إلى الحبيبين،
+            أنتم برهان أن القلوب إذا التقت بصدق تصنع أجمل الحكايات. حبكم ليس صدفة، بل قدر جمع بين روحين ليكونا سنداً لبعضهما. أسأل الله أن يديم بينكما المودة والسكينة، وأن تظل أيامكما عامرة بالضحك والطمأنينة. و ربي يحفظكم لبعض، ويزيد حبكم يوم بعد يوم. وجودكم مع بعض يعطي معنى جميل للحياة، وإن شاء الله تبقوا ديما سند وفرحة لبعضكم.
+        `;
+        const messageLines = longLoveMessage.trim().split('\n');
+        
+        const galleryImageUrls = [
+            "https://l.top4top.io/p_3554gq1b61.jpg",
+            "https://a.top4top.io/p_35549n9v31.jpg",
+            "https://b.top4top.io/p_35546l2uq1.jpg",
+            "https://c.top4top.io/p_35548x5ic1.jpg",
+            "https://d.top4top.io/p_3554p1rct1.jpg",
+            "https://f.top4top.io/p_355419c261.jpg"
+        ];
+
+        const allCreditsLines = [
+            "<strong>إلى أغلى قلبين، رنين وأسامة</strong>",
+            "شكراً لكما على هذا الحب الصادق.",
+            "",
+            "<strong>كلمات الأغنية: Ma Meilleure Ennemie</strong>",
+            "T'es la meilleure chose qui m'est arrivée",
+            "Mais aussi la pire chose qui m'est arrivée",
+            "Ce jour où je t'ai rencontrée, j'aurais peut-être préféré",
+            "Que ce jour ne soit jamais arrivé (arrivé)",
+            "La pire des bénédictions",
+            "La plus belle des malédictions",
+            "De toi, j'devrais m'éloigner",
+            "Mais comme dit le dicton:",
+            "« Plutôt qu'être seul, mieux vaut être mal accompagné »",
+            "Tu sais c'qu'on dit",
+            "« Sois près d'tes amis les plus chers »",
+            "Mais aussi",
+            "Encore plus près d'tes adversaires",
+            "Mais ma meilleure ennemie, c'est toi",
+            "Fuis-moi, le pire c'est toi et moi",
+            "",
+            "Mais si tu cherches encore ma voix,",
+            "Oublie-moi, le pire c'est toi et moi",
+            "",
+            "Pourquoi ton prénom me blesse",
+            "Quand il se cache juste là dans l'espace ?",
+            "C'est quelle émotion ; la haine ou la douceur",
+            "Quand j'entends ton prénom ?",
+            "",
+            "Je t'avais dit, ne regarde pas en arrière",
+            "Le passé qui te suit, te fait la guerre",
+            "",
+            "Mais ma meilleure ennemie, c'est toi",
+            "Fuis-moi, le pire c'est toi et moi",
+            "",
+            "Mais ma meilleure ennemie, c'est toi",
+            "Fuis-moi, le pire c'est toi et moi",
+            "",
+            "",
+            "<strong>إخراج</strong>",
+            "من قلب يحبكما",
+            "",
+            "أتمنى أن تدوم سعادتكما إلى الأبد",
+            "و ربي يحفظكما لبعضكما"
+        ];
+
+        const countdownEl = document.getElementById("countdown");
+        const initialMessageEl = document.getElementById("initial-message");
+        const centeredImage = document.getElementById("centered-image");
+        const loveLetter = document.getElementById("love-letter");
+        const envelope = document.querySelector(".envelope");
+        const loveAudio = document.getElementById("loveAudio");
+        const writingPage = document.getElementById("writing-page");
+        const photoGalleryBtn = document.getElementById("photo-gallery-btn");
+        const openEnvelopeAudio = document.getElementById("openEnvelopeAudio");
+        const writingAudio = document.getElementById("writingAudio");
+        const writingArea = document.getElementById("writing-area");
+        const photoGalleryPage = document.getElementById("photo-gallery-page");
+        const galleryPhotos = document.querySelectorAll(".gallery-photo");
+        const nextPhotoBtn = document.getElementById("next-photo-btn");
+        const galleryAudio = document.getElementById("galleryAudio");
+        const thankYouMessagePage = document.getElementById("thank-you-message-page");
+        const creditsPage = document.getElementById("credits-page");
+        const galleryBg1 = document.getElementById("gallery-bg-1");
+        const galleryBg2 = document.getElementById("gallery-bg-2");
+        
+        let currentPhotoIndex = 0;
+        let currentBgIndex = 0;
+
+        // بداية العد التنازلي
+        let count = 3;
+        const countdownInterval = setInterval(() => {
+            if (count === 3) {
+                loveAudio.play();
+            }
+            count--;
+            if (count > 0) {
+                countdownEl.textContent = count;
+            } else {
+                clearInterval(countdownInterval);
+                countdownEl.style.display = "none";
+                initialMessageEl.style.display = "block";
+                centeredImage.classList.add("visible");
+                startHearts();
+                
+                setTimeout(() => {
+                    initialMessageEl.style.display = "none";
+                    centeredImage.classList.remove("visible");
+                    
+                    setTimeout(() => {
+                        loveLetter.style.display = "block";
+                        envelope.addEventListener("click", () => {
+                            openEnvelopeAudio.play();
+                            loveLetter.style.opacity = "0";
+                            setTimeout(() => {
+                                loveLetter.style.display = "none";
+                                writingPage.style.display = "flex";
+                                writingPage.classList.add("visible");
+                                document.body.classList.add("writing-bg");
+                                document.body.style.overflow = "auto";
+                                clearInterval(heartInterval);
+                                startWritingEffect();
+                            }, 500);
+                        }, { once: true });
+                    }, 5000);
+                }, 3000);
+            }
+        }, 1500);
+
+        // قلوب طائرة (خلفية)
+        const heartColors = ["❤️", "💖", "💜"];
+        function createHeart() {
+            const h = document.createElement("div");
+            h.className = "heart";
+            h.innerHTML = heartColors[Math.floor(Math.random() * heartColors.length)];
+            h.style.left = Math.random() * (window.innerWidth - 50) + "px";
+            h.style.bottom = "0px";
+            h.style.fontSize = (14 + Math.random() * 28) + "px";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 4200);
+        }
+        let heartInterval;
+        function startHearts() {
+            heartInterval = setInterval(createHeart, 500);
+        }
+
+        // تأثير الكتابة اليدوية
+        let lineIndex = 0;
+        let charIndex = 0;
+        let typingInterval;
+
+        function startWritingEffect() {
+            typingInterval = setInterval(() => {
+                if (lineIndex < messageLines.length) {
+                    const currentLine = messageLines[lineIndex].trim();
+                    if (charIndex < currentLine.length) {
+                        writingArea.textContent += currentLine.charAt(charIndex);
+                        writingAudio.currentTime = 0;
+                        writingAudio.play();
+                        charIndex++;
+                    } else {
+                        writingArea.innerHTML += '<br>';
+                        lineIndex++;
+                        charIndex = 0;
+                    }
+                } else {
+                    clearInterval(typingInterval);
+                    document.querySelector('.cursor').style.display = 'none';
+                    photoGalleryBtn.style.display = 'block';
+                }
+            }, 50);
+        }
+
+        // إظهار معرض الصور
+        photoGalleryBtn.addEventListener('click', () => {
+            writingPage.style.display = 'none';
+            document.body.style.overflow = 'hidden';
+            photoGalleryPage.style.display = 'flex';
+            document.body.classList.remove('writing-bg');
+            galleryAudio.play();
+            setTimeout(() => {
+                photoGalleryPage.classList.add('visible');
+                showPhoto(currentPhotoIndex);
+                showGalleryBackground(currentPhotoIndex);
+            }, 50);
+        });
+
+        // وظيفة عرض الصور
+        function showPhoto(index) {
+            galleryPhotos.forEach((photo, i) => {
+                if (i === index) {
+                    photo.classList.add('active');
+                } else {
+                    photo.classList.remove('active');
+                }
+            });
+        }
+
+        // التنقل بين الصور
+        nextPhotoBtn.addEventListener('click', () => {
+            galleryPhotos[currentPhotoIndex].classList.remove('active');
+            currentPhotoIndex++;
+            if (currentPhotoIndex < galleryPhotos.length) {
+                galleryPhotos[currentPhotoIndex].classList.add('active');
+                showGalleryBackground(currentPhotoIndex);
+            } else {
+                showThankYouAndCredits(); // الانتقال إلى رسالة الشكر ثم النهاية
+            }
+        });
+
+        // تغيير خلفية المعرض بسلاسة
+        function showGalleryBackground(index) {
+            const currentBg = (currentBgIndex === 0) ? galleryBg1 : galleryBg2;
+            const nextBg = (currentBgIndex === 0) ? galleryBg2 : galleryBg1;
+            
+            nextBg.style.backgroundImage = `url('${galleryImageUrls[index]}')`;
+            nextBg.classList.add('active');
+            currentBg.classList.remove('active');
+
+            currentBgIndex = (currentBgIndex === 0) ? 1 : 0;
+        }
+
+        // إظهار رسالة الشكر ثم النصوص
+        function showThankYouAndCredits() {
+            galleryAudio.pause();
+            photoGalleryPage.classList.remove('visible');
+            photoGalleryPage.style.display = 'none';
+            document.body.style.overflow = 'hidden';
+            
+            // إظهار رسالة الشكر أولاً
+            setTimeout(() => {
+                thankYouMessagePage.style.display = 'flex';
+                setTimeout(() => {
+                    thankYouMessagePage.classList.add('visible');
+                }, 50);
+
+                // بعد رسالة الشكر، الانتقال إلى النصوص
+                setTimeout(() => {
+                    thankYouMessagePage.classList.remove('visible');
+                    setTimeout(() => {
+                        thankYouMessagePage.style.display = 'none';
+                        creditsPage.style.display = 'flex';
+                        displayCreditsLines();
+                    }, 1000); 
+                }, 5000); 
+            }, 1000); 
+        }
+
+        // عرض السطور سطرًا سطرًا
+        let currentCreditsIndex = 0;
+        function displayCreditsLines() {
+            if (currentCreditsIndex < allCreditsLines.length) {
+                const line = allCreditsLines[currentCreditsIndex];
+                const p = document.createElement('p');
+                p.className = 'credits-line';
+                p.innerHTML = line.trim();
+                
+                if (line.includes('<strong>')) {
+                     p.classList.add('larger');
+                }
+                
+                creditsPage.appendChild(p);
+
+                // إضافة الفئة `visible` بعد تأخير بسيط لإظهار التأثير
+                setTimeout(() => {
+                    p.classList.add('visible');
+                }, 50);
+
+                currentCreditsIndex++;
+                setTimeout(displayCreditsLines, 3000);
+            }
+        }
+        
+        // إعداد الخلفيات مسبقًا
+        galleryImageUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+    </script>
+</body>
+</html>
